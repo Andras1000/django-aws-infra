@@ -16,3 +16,17 @@ variable "ecs_prod_backend_retention_days" {
     description = "Retention period for backend logs"
     default     = 30
 }
+
+variable "prod_rds_db_name" {
+    default = "django_aws"
+}
+
+variable "prod_rds_username" {
+    default = "django_aws"
+}
+
+variable "prod_rds_password" {}
+
+variable "prod_rds_instance_class" {
+    default = "db.t4g.micro"
+}
