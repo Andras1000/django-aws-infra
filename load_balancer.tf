@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "prod_backend" {
   target_type = "ip"
 
   health_check {
-    path                = "/"
+    path                = "/health/"
     port                = "traffic-port"
     healthy_threshold   = 5
     unhealthy_threshold = 2
