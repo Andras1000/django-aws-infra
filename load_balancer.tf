@@ -34,9 +34,28 @@ resource "aws_lb_listener" "prod_http" {
   depends_on        = [aws_lb_target_group.prod_backend]
 
   default_action {
+    type = "redirect"
+    redirect {
+      port        = 443
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource aws_alb_listener "prod_https" {
+  load_balancer_arn = aws_lb.prod.id
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  depends_on        = [aws_lb_target_group.prod_backend]
+
+  default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.prod_backend.arn
   }
+
+  certificate_arn = aws_acm_certificate_validation.prod_backend.certificate_arn
 }
 
 # Allow traffic from 80 and 443 ports only

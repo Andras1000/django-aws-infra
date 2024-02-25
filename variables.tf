@@ -30,3 +30,11 @@ variable "prod_rds_password" {}
 variable "prod_rds_instance_class" {
     default = "db.t4g.micro"
 }
+
+variable "prod_base_domain" {
+    default = "django-ecs.com"
+}
+
+variable "prod_backend_domain" {
+    default = "api.django-ecs.com"
+}
