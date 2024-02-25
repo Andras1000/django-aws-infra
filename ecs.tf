@@ -2,6 +2,20 @@ resource "aws_ecs_cluster" "prod" {
   name = "prod"
 }
 
+locals {
+  container_vars = {
+    region = var.region
+
+    image = aws_ecr_repository.backend.repository_url
+    log_group = aws_cloudwatch_log_group.prod_backend.name
+
+    rds_db_name = var.prod_rds_db_name
+    rds_username = var.prod_rds_username
+    rds_password = var.prod_rds_password
+    rds_hostname = aws_db_instance.prod.address
+  }
+}
+
 resource "aws_ecs_task_definition" "prod_backend_web" {
   network_mode = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -11,19 +25,38 @@ resource "aws_ecs_task_definition" "prod_backend_web" {
   family = "backend-web"
   container_definitions = templatefile(
     "templates/backend_container.json.tpl",
-    {
-      region = var.region
-      name = "prod-backend-web"
-      image = aws_ecr_repository.backend.repository_url
-      command = ["gunicorn", "-w", "3", "-b", ":8000", "django_ecs_aws.wsgi:application"]
-      log_group = aws_cloudwatch_log_group.prod_backend.name
-      log_stream = aws_cloudwatch_log_stream.prod_backend_web.name
-      rds_db_name = var.prod_rds_db_name
-      rds_username = var.prod_rds_username
-      rds_password = var.prod_rds_password
-      rds_hostname = aws_db_instance.prod.address
-    },
+    merge(
+      local.container_vars,
+      {
+        name = "prod-backend-web"
+        command = ["gunicorn", "-w", "3", "-b", ":8000", "django_ecs_aws.wsgi:application"]
+        log_stream = aws_cloudwatch_log_stream.prod_backend_web.name
+      },
+    )
   )
+  execution_role_arn = aws_iam_role.ecs_task_execution.arn
+  task_role_arn = aws_iam_role.prod_backend_task.arn
+}
+
+resource "aws_ecs_task_definition" "prod_backend_migration" {
+  network_mode = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu = "256"
+  memory = "512"
+
+  family = "backend-migration"
+  container_definitions = templatefile(
+    "templates/backend_container.json.tpl",
+    merge(
+      local.container_vars,
+      {
+        name = "prod-backend-migration"
+        command = ["python", "manage.py", "migrate"]
+        log_stream = aws_cloudwatch_log_stream.prod_backend_migrations.name
+      }
+    )
+  )
+  depends_on = [aws_db_instance.prod]
   execution_role_arn = aws_iam_role.ecs_task_execution.arn
   task_role_arn = aws_iam_role.prod_backend_task.arn
 }
@@ -138,4 +171,9 @@ resource "aws_cloudwatch_log_group" "prod_backend" {
 resource "aws_cloudwatch_log_stream" "prod_backend_web" {
   log_group_name = aws_cloudwatch_log_group.prod_backend.name
   name           = "prod-backend-web"
+}
+
+resource "aws_cloudwatch_log_stream" "prod_backend_migrations" {
+  log_group_name = aws_cloudwatch_log_group.prod_backend.name
+  name           = "prod-backend-migrations"
 }
