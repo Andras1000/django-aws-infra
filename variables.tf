@@ -5,7 +5,7 @@ variable "region" {
 
 variable "project_name" {
     description = "The name of the project"
-    default = "django-ecs-aws"
+    default = "django-aws"
 }
 
 variable "availability_zones" {
