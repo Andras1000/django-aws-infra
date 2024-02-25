@@ -38,3 +38,7 @@ variable "prod_base_domain" {
 variable "prod_backend_domain" {
     default = "api.django-ecs.com"
 }
+
+variable "prod_backend_secret_key" {
+    description = "Django SECRET_KEY"
+}
