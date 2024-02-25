@@ -27,7 +27,7 @@
       },
       {
         "name": "SECRET_KEY",
-        "value": "{secret_key}"
+        "value": "${secret_key}"
       },
       {
         "name": "DEBUG",
