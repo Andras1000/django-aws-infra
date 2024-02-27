@@ -16,6 +16,10 @@ locals {
 
     domain = var.prod_backend_domain
     secret_key = var.prod_backend_secret_key
+
+    sqs_access_key = aws_iam_access_key.prod_sqs.id
+    sqs_secret_key = aws_iam_access_key.prod_sqs.secret
+    sqs_name = aws_sqs_queue.prod.name
   }
 }
 
@@ -144,21 +148,20 @@ resource "aws_iam_role" "prod_backend_task" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-    name = "ecs-task-execution"
-    assume_role_policy = jsonencode({
-        Version = "2012-10-17",
-        Statement = [
-        {
-            Action = "sts:AssumeRole",
-            Effect = "Allow",
-            Principal = {
-              Service = "ecs-tasks.amazonaws.com"
-            }
-            Sid = ""
+  name = "ecs-task-execution"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
         }
-        ]
-    })
-
+        Sid = ""
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {

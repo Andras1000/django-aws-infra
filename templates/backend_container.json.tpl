@@ -31,11 +31,23 @@
       },
       {
         "name": "DEBUG",
-        "value": "False"
+        "value": "True"
       },
       {
         "name": "ALLOWED_HOSTS",
         "value": "${domain}"
+      },
+      {
+        "name": "AWS_REGION",
+        "value": "${region}"
+      },
+      {
+        "name": "CELERY_BROKER_URL",
+        "value": "sqs://${urlencode(sqs_access_key)}:${urlencode(sqs_secret_key)}@"
+      },
+      {
+        "name": "CELERY_TASK_DEFAULT_QUEUE",
+        "value": "${sqs_name}"
       }
     ]
   }
