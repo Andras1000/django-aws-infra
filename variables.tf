@@ -42,3 +42,7 @@ variable "prod_backend_domain" {
 variable "prod_backend_secret_key" {
     description = "Django SECRET_KEY"
 }
+
+variable "prod_media_bucket" {
+    default = "prod-media-10572954"
+}

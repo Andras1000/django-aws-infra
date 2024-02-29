@@ -20,6 +20,10 @@ locals {
     sqs_access_key = aws_iam_access_key.prod_sqs.id
     sqs_secret_key = aws_iam_access_key.prod_sqs.secret
     sqs_name = aws_sqs_queue.prod.name
+
+    s3_media_bucket = var.prod_media_bucket
+    s3_access_key = aws_iam_access_key.prod_media_bucket.id
+    s3_secret_key = aws_iam_access_key.prod_media_bucket.secret
   }
 }
 

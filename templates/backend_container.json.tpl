@@ -48,6 +48,30 @@
       {
         "name": "CELERY_TASK_DEFAULT_QUEUE",
         "value": "${sqs_name}"
+      },
+      {
+        "name": "DEFAULT_FILE_STORAGE",
+        "value": "storages.backends.s3boto3.S3Boto3Storage"
+      },
+      {
+        "name": "AWS_ACCESS_KEY_ID",
+        "value": "${s3_access_key}"
+      },
+      {
+        "name": "AWS_SECRET_KEY_ID",
+        "value": "${s3_secret_key}"
+      },
+      {
+        "name": "AWS_STORAGE_BUCKET_NAME",
+        "value": "${s3_media_bucket}"
+      },
+      {
+        "name": "AWS_S3_REGION_NAME",
+        "value": "${region}"
+      },
+      {
+        "name": "AWS_S3_ENDPOINT_URL",
+        "value": "https://${s3_media_bucket}.s3.${region}.amazonaws.com/"
       }
     ]
   }
