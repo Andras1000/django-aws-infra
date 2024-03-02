@@ -31,7 +31,7 @@
       },
       {
         "name": "DEBUG",
-        "value": "True"
+        "value": "False"
       },
       {
         "name": "ALLOWED_HOSTS",
@@ -58,7 +58,7 @@
         "value": "${s3_access_key}"
       },
       {
-        "name": "AWS_SECRET_KEY_ID",
+        "name": "AWS_SECRET_ACCESS_KEY",
         "value": "${s3_secret_key}"
       },
       {
